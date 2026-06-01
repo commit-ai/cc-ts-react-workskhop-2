@@ -24,7 +24,30 @@ app.get('/api/superheroes', (req, res) => {
       res.status(500).send('Internal Server Error');
       return;
     }
-    res.json(JSON.parse(data));
+    const superheroes = JSON.parse(data);
+    const sortBy = String(req.query.sortBy || 'name');
+    const order = String(req.query.order || 'asc');
+
+    const sortedSuperheroes = [...superheroes].sort((leftHero, rightHero) => {
+      if (sortBy === 'name') {
+        if (order === 'desc') {
+          return rightHero.name.localeCompare(leftHero.name);
+        }
+
+        return leftHero.name.localeCompare(rightHero.name);
+      }
+
+      const leftValue = leftHero.powerstats[sortBy];
+      const rightValue = rightHero.powerstats[sortBy];
+
+      if (order === 'desc') {
+        return rightValue - leftValue;
+      }
+
+      return leftValue - rightValue;
+    });
+
+    res.json(sortedSuperheroes);
   });
 });
 

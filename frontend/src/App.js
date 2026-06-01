@@ -3,18 +3,32 @@ import './App.css';
 
 function App() {
   const [superheroes, setSuperheroes] = useState([]);
+  const [sortBy, setSortBy] = useState('name');
+  const [sortOrder, setSortOrder] = useState('asc');
 
   useEffect(() => {
-    fetch('/api/superheroes')
+    fetch(`/api/superheroes?sortBy=${sortBy}&order=${sortOrder}`)
       .then((response) => response.json())
       .then((data) => setSuperheroes(data))
       .catch((error) => console.error('Error fetching superheroes:', error));
-  }, []);
+  }, [sortBy]);
 
   return (
     <div className="App">
       <header className="App-header">
         <h1>Superheroes</h1>
+        <div>
+          <label htmlFor="sortBy">Sort by</label>{' '}
+          <select id="sortBy" value={sortBy} onChange={(event) => setSortBy(event.target.value)}>
+            <option value="name">Name</option>
+            <option value="power">Power</option>
+          </select>{' '}
+          <label htmlFor="sortOrder">Order</label>{' '}
+          <select id="sortOrder" value={sortOrder} onChange={(event) => setSortOrder(event.target.value)}>
+            <option value="asc">Ascending</option>
+            <option value="desc">Descending</option>
+          </select>
+        </div>
         <table>
           <thead>
             <tr>
