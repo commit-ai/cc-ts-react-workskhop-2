@@ -25,5 +25,113 @@ table {
 th, td {
   padding: 12px;
   border: 1px solid #444;
-  pointer-events: none;
+}
+
+tbody tr {
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+tbody tr:hover {
+  background-color: #3a3f4a;
+}
+
+tbody tr.selected {
+  background-color: #1a3a5c;
+  border-left: 3px solid #61dafb;
+}
+
+.compare-btn {
+  background-color: #61dafb;
+  color: #282c34;
+  border: none;
+  padding: 10px 24px;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+  margin: 10px 0;
+  transition: background-color 0.2s;
+}
+
+.compare-btn:hover {
+  background-color: #4fa8c7;
+}
+
+.back-btn {
+  background-color: transparent;
+  color: #61dafb;
+  border: 1px solid #61dafb;
+  padding: 8px 20px;
+  font-size: 0.9rem;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  align-self: flex-start;
+}
+
+.back-btn:hover {
+  background-color: #61dafb;
+  color: #282c34;
+}
+
+.comparison-view {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 800px;
+}
+
+.comparison-cards {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.hero-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hero-img {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 3px solid #444;
+}
+
+.comparison-table td {
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.stat-category {
+  text-transform: capitalize;
+  color: #aaa;
+}
+
+.stat-winner {
+  background-color: rgba(76, 175, 80, 0.3);
+  color: #4caf50;
+}
+
+.stat-loser {
+  background-color: rgba(244, 67, 54, 0.15);
+  color: #e57373;
+}
+
+.stat-tie {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #aaa;
+}
+
+.result {
+  margin-top: 20px;
+  font-size: 1.5rem;
+  color: #61dafb;
 }

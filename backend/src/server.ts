@@ -28,6 +28,52 @@ app.get('/api/superheroes', (req, res) => {
   });
 });
 
+// API route to fetch a single superhero by id
+app.get('/api/superheroes/:id', (req, res) => {
+  const dataPath = path.join(__dirname, '../data/superheroes.json');
+  const id = parseInt(req.params.id, 10);
+  if (isNaN(id) || !Number.isInteger(id)) {
+    res.status(400).json({ error: 'Invalid id - must be an integer' });
+    return;
+  }
+  fs.readFile(dataPath, 'utf8', (err, data) => {
+    if (err) {
+      res.status(500).send('Internal Server Error');
+      return;
+    }
+    const heroes = JSON.parse(data);
+    const hero = heroes.find((h: { id: number }) => h.id === id);
+    if (!hero) {
+      res.status(404).json({ error: 'Superhero not found' });
+      return;
+    }
+    res.json(hero);
+  });
+});
+
+// API route to fetch powerstats for a superhero by id
+app.get('/api/superheroes/:id/powerstats', (req, res) => {
+  const dataPath = path.join(__dirname, '../data/superheroes.json');
+  const id = parseInt(req.params.id, 10);
+  if (isNaN(id) || !Number.isInteger(id)) {
+    res.status(400).json({ error: 'Invalid id - must be an integer' });
+    return;
+  }
+  fs.readFile(dataPath, 'utf8', (err, data) => {
+    if (err) {
+      res.status(500).send('Internal Server Error');
+      return;
+    }
+    const heroes = JSON.parse(data);
+    const hero = heroes.find((h: { id: number }) => h.id === id);
+    if (!hero) {
+      res.status(404).json({ error: 'Superhero not found' });
+      return;
+    }
+    res.json(hero.powerstats);
+  });
+});
+
 // Start the server only if not in test environment
 if (process.env.NODE_ENV !== 'test') {
   app.listen(PORT, () => {
