@@ -47,6 +47,9 @@
     "webpack-dev-server": "^4.15.2",
     "glob": "^10.4.5",
     "rimraf": "^5.0.10",
-    "@jridgewell/sourcemap-codec": "^1.5.0"
+    "@jridgewell/sourcemap-codec": "^1.5.0",
+    "bfj": "^9.1.3",
+    "serialize-javascript": "^7.0.5",
+    "underscore": "^1.13.8"
   }
 }
