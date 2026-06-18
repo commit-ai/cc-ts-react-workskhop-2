@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
+import FeedbackForm from './FeedbackForm';
 
 function App() {
   const [superheroes, setSuperheroes] = useState([]);
@@ -140,6 +141,7 @@ function App() {
           renderComparisonView()
         )}
       </header>
+      <FeedbackForm />
     </div>
   );
 }

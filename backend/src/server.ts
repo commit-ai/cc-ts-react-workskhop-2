@@ -8,7 +8,37 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+app.use(express.json());
 const PORT = process.env.TEST_PORT || process.env.PORT || 3000;
+
+interface FeedbackEntry {
+  id: number;
+  email: string;
+  message: string;
+}
+
+const feedbackStore: FeedbackEntry[] = [];
+let nextFeedbackId = 1;
+
+// Feedback routes
+app.get('/feedback', (_req, res) => {
+  res.json(feedbackStore);
+});
+
+app.post('/feedback', (req, res) => {
+  const { email, message } = req.body;
+  if (!email || typeof email !== 'string' || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    res.status(400).json({ error: 'Invalid email' });
+    return;
+  }
+  if (!message || typeof message !== 'string' || message.trim().length < 10) {
+    res.status(400).json({ error: 'Message must be at least 10 characters' });
+    return;
+  }
+  const entry: FeedbackEntry = { id: nextFeedbackId++, email, message: message.trim() };
+  feedbackStore.push(entry);
+  res.status(201).json(entry);
+});
 
 // Root route
 app.get('/', (req, res) => {
