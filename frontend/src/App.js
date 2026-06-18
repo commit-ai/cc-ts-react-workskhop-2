@@ -5,6 +5,7 @@ function App() {
   const [superheroes, setSuperheroes] = useState([]);
   const [selectedHeroes, setSelectedHeroes] = useState([]);
   const [view, setView] = useState('table');
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     fetch('/api/superheroes')
@@ -99,6 +100,16 @@ function App() {
                 Compare {selectedHeroes[0].name} vs {selectedHeroes[1].name}
               </button>
             )}
+            <div className="search-container">
+              <span className="search-icon">🔍</span>
+              <input
+                type="text"
+                className="search-input"
+                placeholder="Search heroes..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
             <table>
               <thead>
                 <tr>
@@ -115,7 +126,9 @@ function App() {
                 </tr>
               </thead>
               <tbody>
-                {superheroes.map((hero) => (
+                {superheroes.filter((hero) =>
+                  hero.name.toLowerCase().includes(searchQuery.toLowerCase())
+                ).map((hero) => (
                   <tr
                     key={hero.id}
                     className={selectedHeroes.find((h) => h.id === hero.id) ? 'selected' : ''}

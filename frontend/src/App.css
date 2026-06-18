@@ -41,6 +41,35 @@ tbody tr.selected {
   border-left: 3px solid #61dafb;
 }
 
+.search-container {
+  display: flex;
+  align-items: center;
+  background-color: #3a3f4a;
+  border-radius: 8px;
+  padding: 8px 14px;
+  margin: 10px 0;
+  width: 280px;
+}
+
+.search-icon {
+  font-size: 0.85rem;
+  margin-right: 8px;
+  opacity: 0.6;
+}
+
+.search-input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: white;
+  font-size: 0.95rem;
+  width: 100%;
+}
+
+.search-input::placeholder {
+  color: #888;
+}
+
 .compare-btn {
   background-color: #61dafb;
   color: #282c34;
