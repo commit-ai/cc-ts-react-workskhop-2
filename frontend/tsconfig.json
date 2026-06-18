@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": false,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "types": ["@jest/globals"],
+    "baseUrl": "src",
+    "paths": {
+      "react": ["types/react"],
+      "react/jsx-runtime": ["types/react-jsx-runtime"],
+      "react-dom": ["types/react-dom"],
+      "react-dom/client": ["types/react-dom-client"]
+    }
+  },
+  "include": ["src"]
+}

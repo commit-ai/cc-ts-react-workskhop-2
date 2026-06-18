@@ -1,13 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
 
-function App() {
-  const [superheroes, setSuperheroes] = useState([]);
+interface Powerstats {
+  intelligence: number;
+  strength: number;
+  speed: number;
+  durability: number;
+  power: number;
+  combat: number;
+}
+
+interface Superhero {
+  id: number;
+  name: string;
+  image: string;
+  powerstats: Powerstats;
+}
+
+function App(): React.ReactElement {
+  const [superheroes, setSuperheroes] = useState<Superhero[]>([]);
 
   useEffect(() => {
     fetch('/api/superheroes')
       .then((response) => response.json())
-      .then((data) => setSuperheroes(data))
+      .then((data: Superhero[]) => setSuperheroes(data))
       .catch((error) => console.error('Error fetching superheroes:', error));
   }, []);
 
