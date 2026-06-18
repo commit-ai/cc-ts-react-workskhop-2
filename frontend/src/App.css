@@ -135,3 +135,50 @@ tbody tr.selected {
   font-size: 1.5rem;
   color: #61dafb;
 }
+
+.activity-log {
+  width: 100%;
+  max-width: 900px;
+  margin-top: 40px;
+}
+
+.activity-filter {
+  background-color: #3a3f4a;
+  border: 1px solid #555;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  width: 280px;
+  margin-bottom: 12px;
+}
+
+.activity-filter::placeholder {
+  color: #888;
+}
+
+.activity-table {
+  width: 100%;
+}
+
+.activity-state {
+  color: #aaa;
+  font-size: 0.95rem;
+}
+
+.activity-error {
+  color: #e57373;
+}
+
+.method {
+  font-weight: bold;
+  font-family: monospace;
+}
+
+.method-get { color: #61dafb; }
+.method-post { color: #4caf50; }
+.method-put { color: #ff9800; }
+.method-delete { color: #e57373; }
+
+.status-ok { color: #4caf50; }
+.status-error { color: #e57373; }

@@ -2,6 +2,7 @@ import express from 'express';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
+import crypto from 'crypto';
 
 // Get proper __dirname equivalent in ESM
 const __filename = fileURLToPath(import.meta.url);
@@ -9,6 +10,32 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.TEST_PORT || process.env.PORT || 3000;
+
+interface ActivityEntry {
+  id: string;
+  method: string;
+  path: string;
+  timestamp: string;
+  status: number;
+}
+
+const activityLog: ActivityEntry[] = [];
+
+app.use((req, res, next) => {
+  if (req.path === '/activity') return next();
+  const entry: ActivityEntry = {
+    id: crypto.randomUUID(),
+    method: req.method,
+    path: req.path,
+    timestamp: new Date().toISOString(),
+    status: 0,
+  };
+  res.on('finish', () => {
+    entry.status = res.statusCode;
+    activityLog.push(entry);
+  });
+  next();
+});
 
 // Root route
 app.get('/', (req, res) => {
@@ -72,6 +99,11 @@ app.get('/api/superheroes/:id/powerstats', (req, res) => {
     }
     res.json(hero.powerstats);
   });
+});
+
+// Activity log endpoint
+app.get('/activity', (req, res) => {
+  res.json(activityLog);
 });
 
 // Start the server only if not in test environment
