@@ -5,6 +5,11 @@ function App() {
   const [superheroes, setSuperheroes] = useState([]);
   const [selectedHeroes, setSelectedHeroes] = useState([]);
   const [view, setView] = useState('table');
+  const [darkMode, setDarkMode] = useState(false);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : 'light');
+  }, [darkMode]);
 
   useEffect(() => {
     fetch('/api/superheroes')
@@ -90,6 +95,13 @@ function App() {
 
   return (
     <div className="App">
+      <button
+        className="theme-toggle"
+        onClick={() => setDarkMode((prev) => !prev)}
+        aria-label="Toggle dark mode"
+      >
+        {darkMode ? 'Light Mode' : 'Dark Mode'}
+      </button>
       <header className="App-header">
         <h1>Superheroes</h1>
         {view === 'table' ? (

@@ -1,22 +1,64 @@
+:root {
+  --bg-primary: #f0f2f5;
+  --bg-table: #ffffff;
+  --bg-hover: #e2e5ea;
+  --bg-selected: #dbeafe;
+  --border-color: #cccccc;
+  --text-primary: #1a1a2e;
+  --text-muted: #666666;
+  --accent: #0066cc;
+  --accent-text: #ffffff;
+  --accent-hover: #0055aa;
+  --hero-img-border: #cccccc;
+  --stat-winner-bg: rgba(76, 175, 80, 0.2);
+  --stat-winner-color: #2e7d32;
+  --stat-loser-bg: rgba(244, 67, 54, 0.1);
+  --stat-loser-color: #c62828;
+  --stat-tie-bg: rgba(0, 0, 0, 0.04);
+  --stat-tie-color: #666666;
+  --selected-border-color: #0066cc;
+}
+
+[data-theme="dark"] {
+  --bg-primary: #282c34;
+  --bg-table: #282c34;
+  --bg-hover: #3a3f4a;
+  --bg-selected: #1a3a5c;
+  --border-color: #444444;
+  --text-primary: #ffffff;
+  --text-muted: #aaaaaa;
+  --accent: #61dafb;
+  --accent-text: #282c34;
+  --accent-hover: #4fa8c7;
+  --hero-img-border: #444444;
+  --stat-winner-bg: rgba(76, 175, 80, 0.3);
+  --stat-winner-color: #4caf50;
+  --stat-loser-bg: rgba(244, 67, 54, 0.15);
+  --stat-loser-color: #e57373;
+  --stat-tie-bg: rgba(255, 255, 255, 0.05);
+  --stat-tie-color: #aaaaaa;
+  --selected-border-color: #61dafb;
+}
+
 .App {
   text-align: center;
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: var(--bg-primary);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   font-size: calc(10px + 1vmin);
-  color: white;
+  color: var(--text-primary);
   padding: 20px;
 }
 
 table {
   border-collapse: collapse;
   margin: 20px;
-  background-color: #282c34;
+  background-color: var(--bg-table);
   border-radius: 8px;
   overflow: hidden;
   user-select: none;
@@ -24,7 +66,7 @@ table {
 
 th, td {
   padding: 12px;
-  border: 1px solid #444;
+  border: 1px solid var(--border-color);
 }
 
 tbody tr {
@@ -33,17 +75,17 @@ tbody tr {
 }
 
 tbody tr:hover {
-  background-color: #3a3f4a;
+  background-color: var(--bg-hover);
 }
 
 tbody tr.selected {
-  background-color: #1a3a5c;
-  border-left: 3px solid #61dafb;
+  background-color: var(--bg-selected);
+  border-left: 3px solid var(--selected-border-color);
 }
 
 .compare-btn {
-  background-color: #61dafb;
-  color: #282c34;
+  background-color: var(--accent);
+  color: var(--accent-text);
   border: none;
   padding: 10px 24px;
   font-size: 1rem;
@@ -55,13 +97,13 @@ tbody tr.selected {
 }
 
 .compare-btn:hover {
-  background-color: #4fa8c7;
+  background-color: var(--accent-hover);
 }
 
 .back-btn {
   background-color: transparent;
-  color: #61dafb;
-  border: 1px solid #61dafb;
+  color: var(--accent);
+  border: 1px solid var(--accent);
   padding: 8px 20px;
   font-size: 0.9rem;
   border-radius: 6px;
@@ -71,8 +113,8 @@ tbody tr.selected {
 }
 
 .back-btn:hover {
-  background-color: #61dafb;
-  color: #282c34;
+  background-color: var(--accent);
+  color: var(--accent-text);
 }
 
 .comparison-view {
@@ -101,7 +143,7 @@ tbody tr.selected {
   height: 120px;
   object-fit: cover;
   border-radius: 50%;
-  border: 3px solid #444;
+  border: 3px solid var(--hero-img-border);
 }
 
 .comparison-table td {
@@ -112,26 +154,46 @@ tbody tr.selected {
 
 .stat-category {
   text-transform: capitalize;
-  color: #aaa;
+  color: var(--text-muted);
 }
 
 .stat-winner {
-  background-color: rgba(76, 175, 80, 0.3);
-  color: #4caf50;
+  background-color: var(--stat-winner-bg);
+  color: var(--stat-winner-color);
 }
 
 .stat-loser {
-  background-color: rgba(244, 67, 54, 0.15);
-  color: #e57373;
+  background-color: var(--stat-loser-bg);
+  color: var(--stat-loser-color);
 }
 
 .stat-tie {
-  background-color: rgba(255, 255, 255, 0.05);
-  color: #aaa;
+  background-color: var(--stat-tie-bg);
+  color: var(--stat-tie-color);
 }
 
 .result {
   margin-top: 20px;
   font-size: 1.5rem;
-  color: #61dafb;
+  color: var(--accent);
+}
+
+.theme-toggle {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  background-color: var(--accent);
+  color: var(--accent-text);
+  border: none;
+  padding: 8px 14px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+  z-index: 1000;
+  transition: background-color 0.2s;
+}
+
+.theme-toggle:hover {
+  background-color: var(--accent-hover);
 }
