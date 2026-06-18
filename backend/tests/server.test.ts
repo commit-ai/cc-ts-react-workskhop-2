@@ -17,15 +17,15 @@ describe('GET /api/superheroes', () => {
     expect(response.status).toBe(200);
     expect(Array.isArray(response.body)).toBe(true);
     expect(response.body.length).toBeGreaterThan(0);
-    const hero = response.body[0];
-    expect(hero).toHaveProperty('id');
-    expect(hero).toHaveProperty('name');
-    expect(hero).toHaveProperty('powerstats');
+    const first = response.body[0];
+    expect(first).toHaveProperty('id');
+    expect(first).toHaveProperty('name');
+    expect(first).toHaveProperty('powerstats');
   });
 });
 
 describe('GET /api/superheroes/:id', () => {
-  it('should return a hero for a valid id', async () => {
+  it('should return a superhero for a valid id', async () => {
     const response = await request(app).get('/api/superheroes/1');
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty('id', 1);
@@ -39,7 +39,7 @@ describe('GET /api/superheroes/:id', () => {
     expect(response.body).toHaveProperty('error');
   });
 
-  it('should return 404 for a missing id', async () => {
+  it('should return 404 for an id that does not exist', async () => {
     const response = await request(app).get('/api/superheroes/999999');
     expect(response.status).toBe(404);
     expect(response.body).toHaveProperty('error');
@@ -53,6 +53,7 @@ describe('GET /api/superheroes/:id/powerstats', () => {
     expect(response.body).toHaveProperty('intelligence');
     expect(response.body).toHaveProperty('strength');
     expect(response.body).toHaveProperty('speed');
+    expect(response.body).toHaveProperty('durability');
   });
 
   it('should return 400 for a non-integer id', async () => {
@@ -61,7 +62,7 @@ describe('GET /api/superheroes/:id/powerstats', () => {
     expect(response.body).toHaveProperty('error');
   });
 
-  it('should return 404 for a missing id', async () => {
+  it('should return 404 for an id that does not exist', async () => {
     const response = await request(app).get('/api/superheroes/999999/powerstats');
     expect(response.status).toBe(404);
     expect(response.body).toHaveProperty('error');
