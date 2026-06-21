@@ -1,5 +1,73 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import './App.css';
+
+function ActivityLog() {
+  const [activity, setActivity] = useState([]);
+  const [pathFilter, setPathFilter] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const fetchActivity = useCallback((filter) => {
+    setLoading(true);
+    setError(null);
+    const url = filter ? `/activity?path=${encodeURIComponent(filter)}` : '/activity';
+    fetch(url)
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then((data) => { setActivity(data); setLoading(false); })
+      .catch((err) => { setError(err.message); setLoading(false); });
+  }, []);
+
+  useEffect(() => {
+    fetchActivity('');
+  }, [fetchActivity]);
+
+  const handleFilterChange = (e) => {
+    const val = e.target.value;
+    setPathFilter(val);
+    fetchActivity(val);
+  };
+
+  return (
+    <div className="activity-log">
+      <h2>Activity Log</h2>
+      <input
+        type="text"
+        placeholder="Filter by path..."
+        value={pathFilter}
+        onChange={handleFilterChange}
+        className="activity-filter"
+      />
+      {loading && <p>Loading...</p>}
+      {error && <p className="activity-error">Error: {error}</p>}
+      {!loading && !error && activity.length === 0 && <p>No activity recorded.</p>}
+      {!loading && !error && activity.length > 0 && (
+        <table className="activity-table">
+          <thead>
+            <tr>
+              <th>Method</th>
+              <th>Path</th>
+              <th>Timestamp</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {activity.map((entry) => (
+              <tr key={entry.id}>
+                <td>{entry.method}</td>
+                <td>{entry.path}</td>
+                <td>{entry.timestamp}</td>
+                <td>{entry.status}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </div>
+  );
+}
 
 function App() {
   const [superheroes, setSuperheroes] = useState([]);
@@ -140,6 +208,7 @@ function App() {
           renderComparisonView()
         )}
       </header>
+      <ActivityLog />
     </div>
   );
 }

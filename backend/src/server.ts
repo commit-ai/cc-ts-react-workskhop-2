@@ -2,6 +2,7 @@ import express from 'express';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
+import { randomUUID } from 'crypto';
 
 // Get proper __dirname equivalent in ESM
 const __filename = fileURLToPath(import.meta.url);
@@ -9,6 +10,44 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.TEST_PORT || process.env.PORT || 3000;
+
+interface ActivityEntry {
+  id: string;
+  method: string;
+  path: string;
+  timestamp: string;
+  status: number;
+}
+
+const activityLog: ActivityEntry[] = [];
+
+// Record all requests except /activity
+app.use((req, res, next) => {
+  if (req.path === '/activity') {
+    return next();
+  }
+  const entry: ActivityEntry = {
+    id: randomUUID(),
+    method: req.method,
+    path: req.path,
+    timestamp: new Date().toISOString(),
+    status: 0,
+  };
+  res.on('finish', () => {
+    entry.status = res.statusCode;
+    activityLog.push(entry);
+  });
+  next();
+});
+
+// Activity log endpoint
+app.get('/activity', (req, res) => {
+  const pathFilter = typeof req.query.path === 'string' ? req.query.path.toLowerCase() : null;
+  const results = pathFilter
+    ? activityLog.filter((e) => e.path.toLowerCase().includes(pathFilter))
+    : activityLog;
+  res.json(results);
+});
 
 // Root route
 app.get('/', (req, res) => {
