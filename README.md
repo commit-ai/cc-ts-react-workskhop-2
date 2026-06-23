@@ -12,7 +12,7 @@ cd backend
 npm install
 npm run dev
 ```
-- Check http://localhost:3000/ returns "Save the World!"
+- Check http://localhost:41071/ returns "Save the World!"
 
 **Run frontend:**
 - Open a NEW Terminal window in the IDE
@@ -22,7 +22,7 @@ cd frontend
 npm install
 npm start
 ```
-- Check you can see the UI at http://localhost:3001/
+- Check you can see the UI at http://localhost:41072/
 
 ---
 
