@@ -26,7 +26,5 @@ yarn-debug.log*
 yarn-error.log*
 
 # Claude Code and GitHub config (track repo skills, ignore the rest)
-.claude/*
-!.claude/skills/skill-creator/
-!.claude/skills/skill-creator/**
+.claude/plans/
 .github/
