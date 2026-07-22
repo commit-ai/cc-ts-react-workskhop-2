@@ -8,24 +8,43 @@ function App() {
   const [selected, setSelected] = useState([]);
   const [view, setView] = useState('table');
   const [search, setSearch] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(false);
 
   useEffect(() => {
     fetch('/api/superheroes')
-      .then((response) => response.json())
-      .then((data) => setSuperheroes(data))
-      .catch((error) => console.error('Error fetching superheroes:', error));
+      .then((response) => {
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        return response.json();
+      })
+      .then((data) => { setSuperheroes(data); setLoading(false); })
+      .catch((error) => { console.error('Error fetching superheroes:', error); setFetchError(true); setLoading(false); });
   }, []);
 
   function toggleSelect(id) {
-    if (selected.includes(id)) {
-      setSelected(selected.filter(s => s !== id));
-    } else if (selected.length < 2) {
-      setSelected([...selected, id]);
-    }
+    setSelected(prev => {
+      if (prev.includes(id)) {
+        return prev.filter(s => s !== id);
+      } else if (prev.length < 2) {
+        return [...prev, id];
+      }
+      return prev;
+    });
   }
 
   if (view === 'compare') {
     const [heroA, heroB] = selected.map(id => superheroes.find(h => h.id === id));
+    if (!heroA || !heroB) {
+      return (
+        <div className="App">
+          <header className="App-header">
+            <h1>Superheroes</h1>
+            <button onClick={() => { setView('table'); setSelected([]); }}>Back</button>
+            <p>Could not load hero data. Please go back and try again.</p>
+          </header>
+        </div>
+      );
+    }
     const winsA = STATS.filter(s => heroA.powerstats[s] > heroB.powerstats[s]).length;
     const winsB = STATS.filter(s => heroB.powerstats[s] > heroA.powerstats[s]).length;
     const verdict = winsA > winsB
@@ -101,7 +120,17 @@ function App() {
             </tr>
           </thead>
           <tbody>
-            {filteredHeroes.length === 0 && (
+            {loading && (
+              <tr>
+                <td colSpan="10" className="no-results">Loading...</td>
+              </tr>
+            )}
+            {!loading && fetchError && (
+              <tr>
+                <td colSpan="10" className="no-results">Failed to load heroes. Please try again later.</td>
+              </tr>
+            )}
+            {!loading && !fetchError && filteredHeroes.length === 0 && (
               <tr>
                 <td colSpan="10" className="no-results">No heroes found</td>
               </tr>

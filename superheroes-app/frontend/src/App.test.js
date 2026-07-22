@@ -15,7 +15,7 @@ const mockHeroes = [
 
 beforeEach(() => {
   global.fetch = jest.fn(() =>
-    Promise.resolve({ json: () => Promise.resolve(mockHeroes) })
+    Promise.resolve({ ok: true, json: () => Promise.resolve(mockHeroes) })
   );
 });
 
