@@ -7,6 +7,7 @@ function App() {
   const [superheroes, setSuperheroes] = useState([]);
   const [selected, setSelected] = useState([]);
   const [view, setView] = useState('table');
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
     fetch('/api/superheroes')
@@ -66,10 +67,21 @@ function App() {
     );
   }
 
+  const filteredHeroes = superheroes.filter(h =>
+    h.name.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <div className="App">
       <header className="App-header">
         <h1>Superheroes</h1>
+        <input
+          type="text"
+          placeholder="Search heroes..."
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          className="search-input"
+        />
         {selected.length === 2 && (
           <button onClick={() => setView('compare')}>Compare</button>
         )}
@@ -89,7 +101,12 @@ function App() {
             </tr>
           </thead>
           <tbody>
-            {superheroes.map((hero) => (
+            {filteredHeroes.length === 0 && (
+              <tr>
+                <td colSpan="10" className="no-results">No heroes found</td>
+              </tr>
+            )}
+            {filteredHeroes.map((hero) => (
               <tr key={hero.id} onClick={() => toggleSelect(hero.id)} style={{ cursor: 'pointer' }}>
                 <td onClick={e => e.stopPropagation()}>
                   <input

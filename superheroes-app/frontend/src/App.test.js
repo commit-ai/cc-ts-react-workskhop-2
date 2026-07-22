@@ -126,6 +126,73 @@ describe('row-click selection', () => {
   });
 });
 
+// ─── Search / filter ─────────────────────────────────────────────────────────
+
+describe('search input', () => {
+  test('renders a search input above the table', async () => {
+    await renderApp();
+    expect(screen.getByPlaceholderText(/search/i)).toBeInTheDocument();
+  });
+
+  test('shows all heroes when search is empty', async () => {
+    await renderApp();
+    const checkboxes = screen.getAllByRole('checkbox');
+    expect(checkboxes).toHaveLength(mockHeroes.length);
+  });
+
+  test('filters rows by name (case-insensitive)', async () => {
+    await renderApp();
+    await userEvent.type(screen.getByPlaceholderText(/search/i), 'alpha');
+    expect(screen.getByText('Alpha')).toBeInTheDocument();
+    expect(screen.queryByText('Beta')).not.toBeInTheDocument();
+    expect(screen.queryByText('Gamma')).not.toBeInTheDocument();
+    expect(screen.queryByText('Delta')).not.toBeInTheDocument();
+  });
+
+  test('filter is case-insensitive (uppercase input)', async () => {
+    await renderApp();
+    await userEvent.type(screen.getByPlaceholderText(/search/i), 'BETA');
+    expect(screen.getByText('Beta')).toBeInTheDocument();
+    expect(screen.queryByText('Alpha')).not.toBeInTheDocument();
+  });
+
+  test('partial match shows matching heroes', async () => {
+    await renderApp();
+    // 'ta' appears in Beta (bet-a → no; b-e-t-a → yes) and Delta (del-t-a)
+    // but not in Alpha or Gamma
+    await userEvent.type(screen.getByPlaceholderText(/search/i), 'ta');
+    expect(screen.getByText('Beta')).toBeInTheDocument();
+    expect(screen.getByText('Delta')).toBeInTheDocument();
+    expect(screen.queryByText('Alpha')).not.toBeInTheDocument();
+    expect(screen.queryByText('Gamma')).not.toBeInTheDocument();
+  });
+
+  test('shows no rows when no hero matches', async () => {
+    await renderApp();
+    await userEvent.type(screen.getByPlaceholderText(/search/i), 'zzz');
+    expect(screen.queryAllByRole('checkbox')).toHaveLength(0);
+  });
+
+  test('shows a "no heroes found" message when search has no results', async () => {
+    await renderApp();
+    await userEvent.type(screen.getByPlaceholderText(/search/i), 'zzz');
+    expect(screen.getByText(/no heroes found/i)).toBeInTheDocument();
+  });
+
+  test('"no heroes found" message is not shown when there are results', async () => {
+    await renderApp();
+    expect(screen.queryByText(/no heroes found/i)).not.toBeInTheDocument();
+  });
+
+  test('clearing the search restores all rows', async () => {
+    await renderApp();
+    const input = screen.getByPlaceholderText(/search/i);
+    await userEvent.type(input, 'alpha');
+    await userEvent.clear(input);
+    expect(screen.getAllByRole('checkbox')).toHaveLength(mockHeroes.length);
+  });
+});
+
 // ─── Compare button ───────────────────────────────────────────────────────────
 
 describe('Compare button visibility', () => {

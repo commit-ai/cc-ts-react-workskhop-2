@@ -31,3 +31,30 @@ th, td {
   font-weight: bold;
   background-color: #2d5a3d;
 }
+
+.search-input {
+  padding: 8px 14px;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 1px solid #555;
+  background-color: #3a3f4b;
+  color: white;
+  margin-bottom: 10px;
+  width: 280px;
+  outline: none;
+}
+
+.search-input::placeholder {
+  color: #aaa;
+}
+
+.search-input:focus {
+  border-color: #61dafb;
+}
+
+.no-results {
+  color: #aaa;
+  font-style: italic;
+  padding: 24px;
+  text-align: center;
+}
