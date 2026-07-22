@@ -1,7 +1,5 @@
 import request from 'supertest';
-import app from '../src/server';
-
-process.env.TEST_PORT = '3002'; // Set the test port
+import app from '../src/app';
 
 describe('GET /', () => {
   it('should respond with "Save the World!"', async () => {
