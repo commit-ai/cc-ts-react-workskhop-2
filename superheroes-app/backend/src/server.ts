@@ -70,6 +70,19 @@ app.get('/api/superheroes', (req, res) => {
   loadHeroes(res, (heroes) => res.json(heroes));
 });
 
+// API route to search superheroes by name (must be before /:id)
+app.get('/api/superheroes/search', (req, res) => {
+  const query = req.query.name;
+  if (typeof query !== 'string') {
+    res.status(400).json({ error: 'Missing required query parameter: name' });
+    return;
+  }
+  const lower = query.toLowerCase();
+  loadHeroes(res, (heroes) => {
+    res.json(heroes.filter((h) => h.name.toLowerCase().includes(lower)));
+  });
+});
+
 // API route to fetch a single superhero by id
 app.get('/api/superheroes/:id', (req, res) => {
   const id = parseHeroId(req.params.id, res);
