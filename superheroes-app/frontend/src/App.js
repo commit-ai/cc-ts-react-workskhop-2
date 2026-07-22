@@ -26,8 +26,17 @@ function App() {
 
   return (
     <div className="App">
-      <header className="App-header">
-        <h1>Superheroes</h1>
+      <div className="App-header">
+        <header className="top-bar">
+          <h1>
+            <span className="logo-icon" aria-hidden="true">S</span>
+            Superheroes
+          </h1>
+          {!loading && !fetchError && (
+            <span className="hero-count">{superheroes.length} heroes</span>
+          )}
+        </header>
+
         {view === 'compare'
           ? <CompareView heroA={heroA} heroB={heroB} onBack={() => { setView('table'); setSelected([]); }} />
           : <HeroTable
@@ -41,7 +50,7 @@ function App() {
               onCompare={() => setView('compare')}
             />
         }
-      </header>
+      </div>
     </div>
   );
 }
