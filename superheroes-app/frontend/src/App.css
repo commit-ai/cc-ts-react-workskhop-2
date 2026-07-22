@@ -25,5 +25,9 @@ table {
 th, td {
   padding: 12px;
   border: 1px solid #444;
-  pointer-events: none;
+}
+
+.highlight {
+  font-weight: bold;
+  background-color: #2d5a3d;
 }
