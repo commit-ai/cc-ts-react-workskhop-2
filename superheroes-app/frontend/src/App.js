@@ -1,51 +1,56 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import './App.css';
+import useSuperheroes from './hooks/useSuperheroes';
+import HeroTable from './components/HeroTable';
+import CompareView from './components/CompareView';
 
 function App() {
-  const [superheroes, setSuperheroes] = useState([]);
+  const { superheroes, loading, fetchError } = useSuperheroes();
+  const [selected, setSelected] = useState([]);
+  const [view, setView] = useState('table');
+  const [search, setSearch] = useState('');
 
-  useEffect(() => {
-    fetch('/api/superheroes')
-      .then((response) => response.json())
-      .then((data) => setSuperheroes(data))
-      .catch((error) => console.error('Error fetching superheroes:', error));
-  }, []);
+  function toggleSelect(id) {
+    setSelected(prev => {
+      if (prev.includes(id)) return prev.filter(s => s !== id);
+      else if (prev.length < 2) return [...prev, id];
+      return prev;
+    });
+  }
+
+  const filteredHeroes = superheroes.filter(h =>
+    h.name.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const [heroA, heroB] = selected.map(id => superheroes.find(h => h.id === id));
 
   return (
     <div className="App">
-      <header className="App-header">
-        <h1>Superheroes</h1>
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Image</th>
-              <th>Intelligence</th>
-              <th>Strength</th>
-              <th>Speed</th>
-              <th>Durability</th>
-              <th>Power</th>
-              <th>Combat</th>
-            </tr>
-          </thead>
-          <tbody>
-            {superheroes.map((hero) => (
-              <tr key={hero.id}>
-                <td>{hero.id}</td>
-                <td>{hero.name}</td>
-                <td><img src={hero.image} alt={hero.name} width="50" /></td>
-                <td>{hero.powerstats.intelligence}</td>
-                <td>{hero.powerstats.strength}</td>
-                <td>{hero.powerstats.speed}</td>
-                <td>{hero.powerstats.durability}</td>
-                <td>{hero.powerstats.power}</td>
-                <td>{hero.powerstats.combat}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </header>
+      <div className="App-header">
+        <header className="top-bar">
+          <h1>
+            <span className="logo-icon" aria-hidden="true">S</span>
+            Superheroes
+          </h1>
+          {!loading && !fetchError && (
+            <span className="hero-count">{superheroes.length} heroes</span>
+          )}
+        </header>
+
+        {view === 'compare'
+          ? <CompareView heroA={heroA} heroB={heroB} onBack={() => { setView('table'); setSelected([]); }} />
+          : <HeroTable
+              heroes={filteredHeroes}
+              selected={selected}
+              loading={loading}
+              fetchError={fetchError}
+              search={search}
+              onSearchChange={setSearch}
+              onToggleSelect={toggleSelect}
+              onCompare={() => setView('compare')}
+            />
+        }
+      </div>
     </div>
   );
 }

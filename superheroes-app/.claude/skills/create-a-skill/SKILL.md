@@ -1,8 +1,8 @@
 ---
+name: create-a-skill
 description: Create, improve, or review Agent Skills (SKILL.md files) by capturing intent, drafting clear instructions, and iterating through manual feedback. Use when asked to "create a skill", "make a new skill", "scaffold a skill", "improve this skill", "update a SKILL.md", or when turning a workflow or domain expertise into reusable agent instructions. Also trigger when someone shows you a SKILL.md and asks for a review or revision, even if they don't say "skill".
-name: skill-creator
 ---
-# Skill Creator
+# Create a Skill (Skill Creator)
 
 A skill for writing, improving, and reviewing agent skills — the instruction files that give Claude specialized knowledge and workflows.
 

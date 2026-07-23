@@ -3,10 +3,11 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "Express TypeScript backend",
-  "main": "src/server.ts",
+  "main": "src/index.ts",
   "scripts": {
-    "start": "tsx src/server.ts",
-    "dev": "tsx watch src/server.ts",
+    "start": "tsx src/index.ts",
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
   },
   "dependencies": {
@@ -18,17 +19,22 @@
     "@types/node": "^20.11.0",
     "@types/supertest": "^6.0.3",
     "jest": "^30.4.2",
-    "nodemon": "^3.0.2",
     "supertest": "^7.1.4",
     "ts-jest": "^29.4.11",
-    "ts-node": "^10.9.2",
     "tsx": "^4.19.3",
     "typescript": "^5.3.3"
   },
   "overrides": {
     "@babel/core": "^7.29.7",
+    "body-parser": "^1.20.6",
     "form-data": "^4.0.6",
     "glob": "^10.4.5",
-    "js-yaml": "^4.2.0"
+    "js-yaml": "^4.3.0",
+    "minimatch@3": {
+      "brace-expansion": "^1.1.16"
+    },
+    "minimatch@9": {
+      "brace-expansion": "^2.1.2"
+    }
   }
 }
