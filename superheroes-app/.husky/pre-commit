@@ -1,0 +1,8 @@
+#!/bin/sh
+# Brief AI review of staged files — never blocks the commit
+staged=$(git diff --cached --name-only)
+if [ -n "$staged" ]; then
+  echo "$staged" | claude -p \
+    --model "${ANTHROPIC_DEFAULT_HAIKU_MODEL}" \
+    "Review these staged files for obvious bugs and security issues. Be brief." || true
+fi

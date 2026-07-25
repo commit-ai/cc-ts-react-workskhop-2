@@ -1,0 +1,11 @@
+{
+  "name": "superheroes-app",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "prepare": "cd .. && husky superheroes-app/.husky"
+  },
+  "devDependencies": {
+    "husky": "^9.0.0"
+  }
+}
