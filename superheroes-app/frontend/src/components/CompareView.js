@@ -64,19 +64,26 @@ export default function CompareView({ heroA, heroB, onBack }) {
           <thead>
             <tr>
               <th>Stat</th>
-              <th>{heroA.name}</th>
-              <th>{heroB.name}</th>
+              <th className="hide-sm">{heroA.name}</th>
+              <th className="hide-sm">{heroB.name}</th>
+              <th className="stat-col show-sm">Winner</th>
             </tr>
           </thead>
           <tbody>
             {STATS.map(stat => {
               const a = heroA.powerstats[stat];
               const b = heroB.powerstats[stat];
+              const winnerName = a > b ? heroA.name : b > a ? heroB.name : 'Tie';
+              const winnerVal = a > b ? a : b > a ? b : null;
               return (
                 <tr key={stat}>
                   <td>{stat}</td>
-                  <td className={a > b ? 'highlight' : ''}>{a}</td>
-                  <td className={b > a ? 'highlight' : ''}>{b}</td>
+                  <td className={`hide-sm ${a > b ? 'highlight' : ''}`}>{a}</td>
+                  <td className={`hide-sm ${b > a ? 'highlight' : ''}`}>{b}</td>
+                  <td className="stat-cell best-stat-cell show-sm">
+                    <span className="best-stat-name">{winnerName}</span>
+                    <span className="best-stat-val">{winnerVal ?? '—'}</span>
+                  </td>
                 </tr>
               );
             })}

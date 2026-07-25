@@ -545,6 +545,12 @@ td.stat-cell {
 
 /* ── Responsive ──────────────────────────────────────────────────────────── */
 
+/* show-sm: hidden by default, visible only on narrow screens */
+thead th.show-sm,
+td.show-sm {
+  display: none;
+}
+
 @media (max-width: 768px) {
   .App-header {
     padding: 24px 16px 48px;
@@ -562,9 +568,38 @@ td.stat-cell {
   .compare-vs-badge {
     text-align: center;
   }
+}
 
+@media (max-width: 600px) {
   thead th.hide-sm,
   td.hide-sm {
     display: none;
   }
+
+  thead th.show-sm,
+  td.show-sm {
+    display: table-cell;
+  }
+}
+
+.best-stat-cell {
+  text-align: center;
+}
+
+.best-stat-name {
+  display: block;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 500;
+  text-transform: capitalize;
+  color: var(--text-dim);
+  letter-spacing: 0.03em;
+}
+
+.best-stat-val {
+  display: block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--accent);
 }

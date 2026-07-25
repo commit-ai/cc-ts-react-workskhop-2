@@ -1,4 +1,5 @@
 import React from 'react';
+import { getBestStat } from '../utils/heroStats';
 
 function StatBar({ value }) {
   const pct = Math.min(100, Math.max(0, Number(value) || 0));
@@ -57,19 +58,20 @@ export default function HeroTable({ heroes, selected, loading, fetchError, searc
               <th></th>
               <th>ID</th>
               <th>Name</th>
-              <th>Image</th>
+              <th className="hide-sm">Image</th>
               <th className="stat-col hide-sm">Intelligence</th>
               <th className="stat-col hide-sm">Strength</th>
               <th className="stat-col hide-sm">Speed</th>
               <th className="stat-col hide-sm">Durability</th>
               <th className="stat-col hide-sm">Power</th>
               <th className="stat-col hide-sm">Combat</th>
+              <th className="stat-col show-sm">Best Stat</th>
             </tr>
           </thead>
           <tbody>
             {loading && (
               <tr className="state-row">
-                <td colSpan="10">
+                <td colSpan="11">
                   <div className="loading-dots">
                     <span /><span /><span />
                   </div>
@@ -78,14 +80,14 @@ export default function HeroTable({ heroes, selected, loading, fetchError, searc
             )}
             {!loading && fetchError && (
               <tr className="state-row">
-                <td colSpan="10">
+                <td colSpan="11">
                   <span className="error-state">Failed to load heroes. Please try again later.</span>
                 </td>
               </tr>
             )}
             {!loading && !fetchError && heroes.length === 0 && (
               <tr className="state-row">
-                <td colSpan="10">
+                <td colSpan="11">
                   <span className="no-results">No heroes found</span>
                 </td>
               </tr>
@@ -106,7 +108,7 @@ export default function HeroTable({ heroes, selected, loading, fetchError, searc
                 </td>
                 <td className="id-cell">{hero.id}</td>
                 <td className="name-cell">{hero.name}</td>
-                <td className="img-cell">
+                <td className="img-cell hide-sm">
                   <img src={hero.image} alt={hero.name} className="hero-avatar" />
                 </td>
                 <td className="stat-cell hide-sm">
@@ -126,6 +128,9 @@ export default function HeroTable({ heroes, selected, loading, fetchError, searc
                 </td>
                 <td className="stat-cell hide-sm">
                   <StatBar value={hero.powerstats.combat} />
+                </td>
+                <td className="stat-cell best-stat-cell show-sm">
+                  {(() => { const b = getBestStat(hero); return <><span className="best-stat-name">{b.name}</span><span className="best-stat-val">{b.value}</span></>; })()}
                 </td>
               </tr>
             ))}
