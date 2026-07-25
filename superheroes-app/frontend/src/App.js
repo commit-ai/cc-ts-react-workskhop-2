@@ -3,6 +3,7 @@ import './App.css';
 import useSuperheroes from './hooks/useSuperheroes';
 import HeroTable from './components/HeroTable';
 import CompareView from './components/CompareView';
+import ActivityDashboard from './components/ActivityDashboard';
 
 function App() {
   const { superheroes, loading, fetchError } = useSuperheroes();
@@ -32,12 +33,17 @@ function App() {
             <span className="logo-icon" aria-hidden="true">S</span>
             Superheroes
           </h1>
-          {!loading && !fetchError && (
-            <span className="hero-count">{superheroes.length} heroes</span>
-          )}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            {!loading && !fetchError && (
+              <span className="hero-count">{superheroes.length} heroes</span>
+            )}
+            <button className="btn-back" onClick={() => setView('activity')}>Activity</button>
+          </div>
         </header>
 
-        {view === 'compare'
+        {view === 'activity'
+          ? <ActivityDashboard onBack={() => setView('table')} />
+          : view === 'compare'
           ? <CompareView heroA={heroA} heroB={heroB} onBack={() => { setView('table'); setSelected([]); }} />
           : <HeroTable
               heroes={filteredHeroes}
