@@ -33,3 +33,5 @@ yarn-error.log*
 test-results/
 .playwright-mcp/
 playwright-report/
+
+eslint-pre-edit-*.js
