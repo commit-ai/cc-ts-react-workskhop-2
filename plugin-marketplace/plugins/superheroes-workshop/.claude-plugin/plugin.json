@@ -1,0 +1,9 @@
+{
+  "name": "superheroes-workshop",
+  "description": "Skills and hooks for the Superheroes app workshop: responsive table pattern and ESLint pre-edit hook.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Gal Ziv"
+  },
+  "keywords": ["superheroes", "responsive-table", "eslint", "workshop", "hooks"]
+}

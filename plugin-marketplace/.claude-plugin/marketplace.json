@@ -1,0 +1,20 @@
+{
+  "$schema": "https://cdn.jsdelivr.net/npm/@anthropic-ai/claude-code@latest/resources/marketplace-schema.json",
+  "name": "superheroes-workshop-marketplace",
+  "description": "Plugin marketplace for the Superheroes app Claude Code workshop, bundling skills and hooks used during the exercises.",
+  "owner": {
+    "name": "Gal Ziv"
+  },
+  "metadata": {
+    "pluginRoot": "./plugins"
+  },
+  "plugins": [
+    {
+      "name": "superheroes-workshop",
+      "source": "./plugins/superheroes-workshop",
+      "description": "Responsive hero table skill and ESLint pre-edit hook for the Superheroes app workshop.",
+      "category": "developer-tools",
+      "tags": ["superheroes", "responsive", "eslint", "workshop"]
+    }
+  ]
+}
