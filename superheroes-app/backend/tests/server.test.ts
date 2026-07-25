@@ -1,5 +1,6 @@
 import request from 'supertest';
 import app from '../src/app';
+import { clearLog } from '../src/services/activityLog';
 
 describe('GET /', () => {
   it('should respond with "Save the World!"', async () => {
@@ -106,6 +107,39 @@ describe('GET /api/superheroes/search', () => {
     expect(hero).toHaveProperty('name');
     expect(hero).toHaveProperty('image');
     expect(hero).toHaveProperty('powerstats');
+  });
+});
+
+describe('GET /api/activity', () => {
+  beforeEach(() => clearLog());
+
+  it('should record a regular API request in the log', async () => {
+    await request(app).get('/api/superheroes/1');
+    const response = await request(app).get('/api/activity');
+    expect(response.status).toBe(200);
+    expect(Array.isArray(response.body)).toBe(true);
+    const entry = response.body.find((e: { path: string }) => e.path === '/api/superheroes/1');
+    expect(entry).toBeDefined();
+    expect(entry).toHaveProperty('method', 'GET');
+    expect(entry).toHaveProperty('timestamp');
+  });
+
+  it('should return filtered results when ?path= is supplied', async () => {
+    await request(app).get('/api/superheroes/1');
+    await request(app).get('/api/superheroes/search?name=batman');
+    const response = await request(app).get('/api/activity?path=search');
+    expect(response.status).toBe(200);
+    expect(Array.isArray(response.body)).toBe(true);
+    expect(response.body.every((e: { path: string }) => e.path.includes('search'))).toBe(true);
+    expect(response.body.some((e: { path: string }) => e.path === '/api/superheroes/1')).toBe(false);
+  });
+
+  it('should never record the /api/activity endpoint itself', async () => {
+    await request(app).get('/api/activity');
+    await request(app).get('/api/activity?path=activity');
+    const response = await request(app).get('/api/activity');
+    expect(response.status).toBe(200);
+    expect(response.body.every((e: { path: string }) => e.path !== '/api/activity')).toBe(true);
   });
 });
 
