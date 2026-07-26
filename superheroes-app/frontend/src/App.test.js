@@ -1,5 +1,6 @@
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { vi } from 'vitest';
 import App from './App';
 
 // Fixture heroes — stats designed for predictable winner/tie scenarios:
@@ -14,13 +15,13 @@ const mockHeroes = [
 ];
 
 beforeEach(() => {
-  global.fetch = jest.fn(() =>
+  global.fetch = vi.fn(() =>
     Promise.resolve({ ok: true, json: () => Promise.resolve(mockHeroes) })
   );
 });
 
 afterEach(() => {
-  jest.restoreAllMocks();
+  vi.restoreAllMocks();
 });
 
 async function renderApp() {
