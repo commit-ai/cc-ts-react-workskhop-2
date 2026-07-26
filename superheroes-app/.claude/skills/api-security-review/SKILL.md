@@ -1,20 +1,18 @@
 ---
 name: api-security-review
 description: >
-  Security review of REST API endpoint code, focused exclusively on API-level
-  vulnerabilities: authentication, authorization, input validation, error
-  handling, rate limiting, logging, and related REST best practices.
-  Does NOT cover general application security (XSS, dependency vulnerabilities,
-  infrastructure, secrets management) — use the built-in /security-review skill
-  for that broader scope.
+  Security and correctness review of REST API endpoint code and git diffs.
+  Covers API-level vulnerabilities AND general correctness: missing null
+  checks, uncached expensive I/O on every request, hardcoded configuration
+  values (ports, origins), unsafe middleware ordering, unvalidated query/path
+  params, and runtime crash risks.
 
-  Use this skill whenever the user asks to review an API for security, audit
-  endpoints, check for auth issues, validate input handling in routes, or says
-  things like "is this endpoint secure?", "review my API routes", "check my
-  auth middleware", "are there authorization holes?", "what security issues
-  does my API have?", or "review this controller/handler for security". Also
-  invoke proactively when the user shares API route code and security could
-  plausibly be a concern — even if they just say "review this".
+  ALWAYS invoke this skill when asked to "review this diff" or "review this
+  code" — even if the request uses no security-specific language. Also invoke
+  for: "is this endpoint secure?", "review my API routes", "check my auth
+  middleware", "what issues does this code have?", "review this
+  controller/handler". Invoke proactively whenever route or middleware code is
+  shown and correctness or safety could be a concern.
 ---
 
 # API Security Review
@@ -168,6 +166,10 @@ and investigate incidents:
   expose state-changing behavior without CSRF protection.
 - **CORS policy**: is `Access-Control-Allow-Origin: *` used on credentialed
   endpoints, or are origins allowlisted appropriately?
+- **CORS middleware ordering**: is `app.use(cors(...))` registered *before*
+  routes are mounted? Middleware added after routes are registered won't run
+  for those routes, so CORS headers will be absent on already-mounted
+  endpoints. Always flag if `cors()` appears after route-mounting calls.
 - **Sensitive data in responses**: are responses filtered to return only what
   the caller needs? Returning full user objects (including hashed passwords,
   internal flags, or PII) when only a name is needed violates the principle of
@@ -176,6 +178,11 @@ and investigate incidents:
   to prevent a caller requesting millions of rows?
 - **Idempotency of mutation endpoints**: for payment or order endpoints, is
   there protection against duplicate submissions?
+- **Uncached expensive I/O on every request**: does any handler perform a file
+  read, full table scan, or equivalent expensive operation on every request
+  with no caching layer? This is a resource exhaustion vector — an attacker
+  can trivially amplify server load. Flag it when you see it, and note if the
+  same pattern is repeated across multiple routes (systemic, not one-off).
 
 ## Output format
 

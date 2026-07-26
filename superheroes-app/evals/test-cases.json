@@ -1,0 +1,29 @@
+[
+  {
+    "id": "missing-null-check-in-hero-lookup",
+    "input": "diff --git a/backend/src/routes/heroes.router.ts b/backend/src/routes/heroes.router.ts\nindex a3c1f2e..b7d4a91 100644\n--- a/backend/src/routes/heroes.router.ts\n+++ b/backend/src/routes/heroes.router.ts\n@@ -12,8 +12,10 @@ router.get('/:id', async (req, res) => {\n   const id = parseHeroId(req.params.id);\n   if (id === null) {\n     return res.status(400).json({ error: 'Invalid hero ID' });\n   }\n   const heroes = await loadHeroes();\n-  const hero = heroes.find(h => h.id === id);\n-  return res.status(200).json(hero);\n+  const hero = heroes.find(h => h.id === id);\n+  const stats = hero.powerstats;\n+  return res.status(200).json({ ...hero, computedRating: Object.values(stats).reduce((a, b) => a + b, 0) });\n });\n",
+    "criteria": [
+      "mentions the missing null check on `hero` before accessing `hero.powerstats` — if no hero matches the ID the code will throw a TypeError",
+      "suggests returning a 404 response when the hero is not found",
+      "notes that `Object.values(stats).reduce(...)` can produce NaN if any powerstat value is null or undefined"
+    ]
+  },
+  {
+    "id": "hardcoded-port-and-cors-wildcard",
+    "input": "diff --git a/backend/src/index.ts b/backend/src/index.ts\nindex c9e2d11..f4a08b3 100644\n--- a/backend/src/index.ts\n+++ b/backend/src/index.ts\n@@ -1,7 +1,12 @@\n import express from 'express';\n+import cors from 'cors';\n import { app } from './app';\n \n-const PORT = process.env.PORT ?? 41071;\n+const PORT = 41071;\n+\n+app.use(cors({ origin: '*' }));\n \n app.listen(PORT, () => {\n   console.log(`Server running on port ${PORT}`);\n });\n",
+    "criteria": [
+      "flags the hardcoded port number 41071 — it should read from `process.env.PORT` to remain configurable across environments",
+      "warns that `cors({ origin: '*' })` allows any origin, which is too permissive for production and should be restricted to known frontend origins",
+      "points out that `app.use(cors(...))` is added after the app is already created and routes may already be mounted, so the middleware ordering could cause CORS headers to be missing on some requests"
+    ]
+  },
+  {
+    "id": "search-route-missing-param-validation",
+    "input": "diff --git a/backend/src/routes/heroes.router.ts b/backend/src/routes/heroes.router.ts\nindex b7d4a91..e3f9c40 100644\n--- a/backend/src/routes/heroes.router.ts\n+++ b/backend/src/routes/heroes.router.ts\n@@ -4,6 +4,14 @@ import { loadHeroes, parseHeroId } from '../services/heroes.service';\n \n const router = Router();\n \n+router.get('/search', async (req, res) => {\n+  const heroes = await loadHeroes();\n+  const results = heroes.filter(h =>\n+    h.name.toLowerCase().includes(req.query.name.toLowerCase())\n+  );\n+  return res.status(200).json(results);\n+});\n+\n router.get('/', async (req, res) => {\n   const heroes = await loadHeroes();\n   return res.status(200).json(heroes);\n });\n",
+    "criteria": [
+      "flags that `req.query.name` is typed as `string | string[] | ParsedQs | ParsedQs[] | undefined` and is used without any validation — if `name` is omitted or not a plain string the call to `.toLowerCase()` will throw",
+      "suggests checking that `req.query.name` is present and is a string, and returning a 400 error otherwise",
+      "notes that `loadHeroes()` is called on every search request without caching, which duplicates the same concern present on other routes"
+    ]
+  }
+]
