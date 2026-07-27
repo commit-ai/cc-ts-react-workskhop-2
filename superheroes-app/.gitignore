@@ -27,7 +27,6 @@ yarn-error.log*
 
 # Claude Code and GitHub config (track repo skills, ignore the rest)
 .claude/plans/
-.claude/skills/exercise-handoff/
 .claude/skills/npm-vulnerability-remediator/
 .github/
 
