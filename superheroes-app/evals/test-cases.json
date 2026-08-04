@@ -1,0 +1,29 @@
+[
+  {
+    "id": "missing-auth-admin-endpoint",
+    "input": "diff --git a/backend/src/app.ts b/backend/src/app.ts\nindex 1a2b3c4..5d6e7f8 100644\n--- a/backend/src/app.ts\n+++ b/backend/src/app.ts\n@@ -1,6 +1,8 @@\n import express from 'express';\n import heroesRouter from './routes/heroes.router.js';\n import activityRouter from './routes/activity.router.js';\n+import adminRouter from './routes/admin.router.js';\n import { record } from './services/activityLog.js';\n \n const app = express();\n@@ -14,5 +16,6 @@\n app.get('/', (req, res) => {\n   res.send('Save the World!');\n });\n \n app.use('/api/superheroes', heroesRouter);\n app.use('/api/activity', activityRouter);\n+app.use('/api/admin', adminRouter);\n \n export default app;\ndiff --git a/backend/src/routes/admin.router.ts b/backend/src/routes/admin.router.ts\nnew file mode 100644\nindex 0000000..abc1234\n--- /dev/null\n+++ b/backend/src/routes/admin.router.ts\n@@ -0,0 +1,24 @@\n+import { Router } from 'express';\n+import fs from 'fs';\n+import path from 'path';\n+\n+const router = Router();\n+\n+// List all hero data files\n+router.get('/heroes/export', (req, res) => {\n+  const dataDir = path.join(process.cwd(), 'data');\n+  const files = fs.readdirSync(dataDir);\n+  res.json({ files });\n+});\n+\n+// Delete a hero by ID\n+router.delete('/heroes/:id', (req, res) => {\n+  const id = parseInt(req.params.id, 10);\n+  // TODO: implement deletion logic\n+  res.json({ deleted: id, status: 'ok' });\n+});\n+\n+export default router;",
+    "criteria": [
+      "flags that the /api/admin routes have no authentication or authorization middleware, making them accessible to any unauthenticated caller",
+      "identifies the DELETE /api/admin/heroes/:id endpoint as allowing unauthenticated destructive operations",
+      "notes that admin routes are mounted without any auth guard in app.ts"
+    ]
+  },
+  {
+    "id": "unvalidated-query-param-reflected",
+    "input": "diff --git a/backend/src/routes/heroes.router.ts b/backend/src/routes/heroes.router.ts\nindex 9f1e2d3..4a7b8c9 100644\n--- a/backend/src/routes/heroes.router.ts\n+++ b/backend/src/routes/heroes.router.ts\n@@ -1,5 +1,6 @@\n import { Router } from 'express';\n import { loadHeroes, parseHeroId } from '../services/heroes.service.js';\n+import { db } from '../services/db.js';\n \n const router = Router();\n \n@@ -17,6 +18,18 @@\n   });\n });\n \n+// New endpoint: filter heroes by alignment (good/bad/neutral)\n+router.get('/filter', (req, res) => {\n+  const alignment = req.query.alignment;\n+  const limit = req.query.limit;\n+\n+  db.query(\n+    `SELECT * FROM heroes WHERE alignment = '${alignment}' LIMIT ${limit}`,\n+    (err, rows) => {\n+      if (err) throw err;\n+      res.json(rows);\n+    }\n+  );\n+});\n+\n router.get('/:id', (req, res) => {",
+    "criteria": [
+      "flags the SQL injection vulnerability: both `alignment` and `limit` query parameters are interpolated directly into the SQL query string without parameterization",
+      "identifies the missing validation on `limit`: an unbounded or non-numeric value can cause query errors or resource exhaustion",
+      "notes that `alignment` is also reflected into the query without type-checking or whitelisting against valid values"
+    ]
+  },
+  {
+    "id": "stack-trace-leaked-in-error-response",
+    "input": "diff --git a/backend/src/app.ts b/backend/src/app.ts\nindex 1a2b3c4..7e9f012 100644\n--- a/backend/src/app.ts\n+++ b/backend/src/app.ts\n@@ -1,6 +1,7 @@\n import express from 'express';\n+import type { Request, Response, NextFunction } from 'express';\n import heroesRouter from './routes/heroes.router.js';\n import activityRouter from './routes/activity.router.js';\n import { record } from './services/activityLog.js';\n \n const app = express();\n@@ -18,5 +19,14 @@\n app.use('/api/superheroes', heroesRouter);\n app.use('/api/activity', activityRouter);\n \n+// Global error handler\n+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {\n+  console.log('Error occurred:', err);\n+  res.status(500).json({\n+    error: err.message,\n+    stack: err.stack,\n+    path: req.path,\n+  });\n+});\n+\n export default app;",
+    "criteria": [
+      "flags that `err.stack` is returned to the client in the JSON response, leaking file paths, line numbers, and internal implementation details",
+      "identifies that `err.message` is forwarded verbatim to the client, which may expose internal error text from database drivers, filesystem operations, or third-party libraries",
+      "notes that the error handler uses console.log instead of a structured logger, and logs the full error object which may contain sensitive fields"
+    ]
+  }
+]
